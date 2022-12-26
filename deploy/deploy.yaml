@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petrosa-strategy-gapfinder-backtesting-deploy
+  namespace: petrosa-apps
+  labels:
+    app: petrosa-strategy-gapfinder-backtesting-app
+spec:
+  selector:
+    matchLabels:
+      app: petrosa-strategy-gapfinder-backtesting
+  template:
+    metadata:
+      labels:
+        app: petrosa-strategy-gapfinder-backtesting
+    spec:
+      containers:
+      - name: petrosa-strategy-gapfinder-backtesting
+        image: yurisa2/petrosa-strategy-gapfinder-backtesting:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+          - name: VERSION
+            value: "0.0.1"
+          - name: MONGO_URI
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: MONGO_URI
+                optional: false
