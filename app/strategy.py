@@ -3,7 +3,6 @@ import base64
 import logging
 import json
 import requests
-import threading
 import newrelic.agent
 from app import data_manager
 
@@ -28,12 +27,12 @@ class Strategy(object):
         
         logging.warning(send_data)
         
-        # resp = requests.post(
-        #                      os.environ.get('BINANCE_ORDERS_ENDPOINT'), 
-        #                      data=send_data
-        #                      )
+        resp = requests.post(
+                             os.environ.get('BINANCE_ORDERS_ENDPOINT'), 
+                             data=send_data
+                             )
         
-        # logging.warning(resp.text)
+        logging.warning(resp.text)
         
 
     @newrelic.agent.background_task()
@@ -74,7 +73,7 @@ class Strategy(object):
             logging.info("No backtests for this: " + str(ticker) + ' ' + str(period) + ' ' + str(diff))
             return False
 
-        TRADES = 1000
+        TRADES = 2
         SQN = 2
 
         params = {}
@@ -88,26 +87,29 @@ class Strategy(object):
         params["sell_threshold"] = bt["sell_threshold"]
         params["sell_tp"] = bt["sell_tp"]
 
-        if (diff < 0 and diff > (-1 * bt["buy_threshold"]) and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
+        if (diff < 0 and 
+            diff > (-1 * bt["buy_threshold"]) and 
+            bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             
             req = self.build_request(ticker,
                                      'COMPRA', price, bt["buy_sl"], bt["buy_tp"])
             
-            # logging.warning('This should be a BUY ' + json.dumps(params))
             logging.warning('BUY Request ' + json.dumps(req))
             
-            threading.Thread(target=self.request_it, args=(req,)).start()
+            self.request_it(req)
             
-        elif (diff > 0 and diff > bt["sell_threshold"] and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
+        elif (diff > 0 and 
+              diff > bt["sell_threshold"] and 
+              bt['# Trades'] > TRADES and 
+              bt['SQN'] > SQN):
             req = self.build_request(ticker,
                                      'VENDA',
                                      price,
                                      bt["sell_sl"],
                                      bt["sell_tp"])
-            # logging.warning('This should be a SELLLLLL' + json.dumps(params))
-            logging.warning('SELL Request ' + json.dumps(req))
-            threading.Thread(target=self.request_it, args=(req,)).start()
 
+            logging.warning('SELL Request ' + json.dumps(req))
+            self.request_it(req)
 
         else:
             # logging.warning('didnt reach params' + json.dumps(params))
