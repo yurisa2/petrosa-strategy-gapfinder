@@ -21,7 +21,7 @@ class Strategy(object):
         bt = self.dm.get_result_bt(ticker, period)
 
         if bt is None:
-            logging.warning("No backtests for this ")
+            logging.warning("No backtests for this: " + ticker + ' ' + period + ' ' + diff)
             return False
 
         TRADES = 1000
