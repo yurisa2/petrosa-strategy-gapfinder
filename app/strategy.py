@@ -21,8 +21,10 @@ class Strategy(object):
     @newrelic.agent.background_task()
     def request_it(self, request):
         
-        request = base64.b64encode(bytes(request))
-        send_data = {"data": request}
+        request = base64.b64encode(bytes(json.dumps(request), "utf-8"))
+        request = request.decode()
+        send_data ={"message": {"data": request}}
+        send_data = json.dumps(send_data)
         
         resp = requests.post(
                              os.environ.get('BINANCE_ORDERS_ENDPOINT'), 
@@ -92,7 +94,7 @@ class Strategy(object):
             logging.warning('This should be a BUY ' + json.dumps(params))
             logging.warning('BUY Request ' + json.dumps(req))
             
-            threading.Thread(target=self.request_it, args=(req)).start()
+            threading.Thread(target=self.request_it, args=(req,)).start()
             
         elif (diff < bt["buy_threshold"] and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             req = self.build_request(ticker,
@@ -102,7 +104,7 @@ class Strategy(object):
                                      bt["sell_tp"])
             logging.warning('This should be a SELLLLLL' + json.dumps(params))
             logging.warning('SELL Request ' + json.dumps(req))
-            threading.Thread(target=self.request_it, args=(req)).start()
+            threading.Thread(target=self.request_it, args=(req,)).start()
 
 
         else:
