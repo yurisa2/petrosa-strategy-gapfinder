@@ -19,7 +19,7 @@ class Strategy(object):
 
     @newrelic.agent.background_task()
     def build_request(self, ticker, type, price, stop_loss_p, take_profit_p):
-        token = f"{os.get('BINANCE_API_KEY')};{os.get('BINANCE_API_SECRET')}"
+        token = f"{os.environ.get('BINANCE_API_KEY')};{os.environ.get('BINANCE_API_SECRET')}"
 
         if type == "COMPRA":
             stop_loss = price + (price * (stop_loss_p/100))
@@ -91,6 +91,6 @@ class Strategy(object):
 
         diff = self.calc_diff(float(decoded['close']), 
                                     float(previous_kline['close']))
-                                    
+
         self.actuator(decoded['symbol'], decoded['period'], diff, decoded)
 
