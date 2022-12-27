@@ -14,8 +14,7 @@ class Strategy(object):
 
     @newrelic.agent.background_task()
     def calc_diff(self, current, previous):
-        diff = ((current / previous) - 1) * 100
-        
+        diff = ((current / previous)-1) * 100
         return diff
 
     @newrelic.agent.background_task()
@@ -47,11 +46,11 @@ class Strategy(object):
 
 
         if type == "COMPRA":
-            stop_loss = price + (price * (stop_loss_p/100))
-            take_profit = price - (price * (take_profit_p/100))
+            stop_loss = price * (1 - (stop_loss_p / 100))
+            take_profit = price * (1 + (take_profit_p / 100))
         if type == "VENDA":
-            stop_loss = price - (price * (stop_loss_p/100))
-            take_profit = price + (price * (take_profit_p/100))
+            stop_loss = price * (1 + (stop_loss_p / 100))
+            take_profit = price * (1 + (take_profit_p / 100))
 
 
         data = {
@@ -89,7 +88,7 @@ class Strategy(object):
         params["sell_threshold"] = bt["sell_threshold"]
         params["sell_tp"] = bt["sell_tp"]
 
-        if (diff > (-1 * bt["sell_threshold"]) and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
+        if (diff < 0 and diff > (-1 * bt["buy_threshold"]) and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             
             req = self.build_request(ticker,
                                      'COMPRA', price, bt["buy_sl"], bt["buy_tp"])
@@ -99,7 +98,7 @@ class Strategy(object):
             
             threading.Thread(target=self.request_it, args=(req,)).start()
             
-        elif (diff < bt["buy_threshold"] and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
+        elif (diff > 0 and diff > bt["sell_threshold"] and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             req = self.build_request(ticker,
                                      'VENDA',
                                      price,
