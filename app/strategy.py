@@ -26,12 +26,12 @@ class Strategy(object):
         send_data ={"message": {"data": request}}
         send_data = json.dumps(send_data)
         
-        resp = requests.post(
-                             os.environ.get('BINANCE_ORDERS_ENDPOINT'), 
-                             data=send_data
-                             )
+        # resp = requests.post(
+        #                      os.environ.get('BINANCE_ORDERS_ENDPOINT'), 
+        #                      data=send_data
+        #                      )
         
-        logging.warning(resp.text)
+        # logging.warning(resp.text)
         
 
     @newrelic.agent.background_task()
@@ -91,8 +91,8 @@ class Strategy(object):
             req = self.build_request(ticker,
                                      'COMPRA', price, bt["buy_sl"], bt["buy_tp"])
             
-            logging.warning('This should be a BUY ' + json.dumps(params))
-            logging.warning('BUY Request ' + json.dumps(req))
+            # logging.warning('This should be a BUY ' + json.dumps(params))
+            # logging.warning('BUY Request ' + json.dumps(req))
             
             threading.Thread(target=self.request_it, args=(req,)).start()
             
@@ -102,8 +102,8 @@ class Strategy(object):
                                      price,
                                      bt["sell_sl"],
                                      bt["sell_tp"])
-            logging.warning('This should be a SELLLLLL' + json.dumps(params))
-            logging.warning('SELL Request ' + json.dumps(req))
+            # logging.warning('This should be a SELLLLLL' + json.dumps(params))
+            # logging.warning('SELL Request ' + json.dumps(req))
             threading.Thread(target=self.request_it, args=(req,)).start()
 
 
