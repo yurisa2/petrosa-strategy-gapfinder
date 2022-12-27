@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: petrosa-strategy-gapfinder-backtesting-deploy
+  name: petrosa-strategy-gapfinder-deploy
   namespace: petrosa-apps
   labels:
-    app: petrosa-strategy-gapfinder-backtesting-app
+    app: petrosa-strategy-gapfinder-app
 spec:
   selector:
     matchLabels:
-      app: petrosa-strategy-gapfinder-backtesting
+      app: petrosa-strategy-gapfinder
   template:
     metadata:
       labels:
-        app: petrosa-strategy-gapfinder-backtesting
+        app: petrosa-strategy-gapfinder
     spec:
       containers:
-      - name: petrosa-strategy-gapfinder-backtesting
-        image: yurisa2/petrosa-strategy-gapfinder-backtesting:latest
+      - name: petrosa-strategy-gapfinder
+        image: yurisa2/petrosa-strategy-gapfinder:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

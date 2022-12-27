@@ -1,14 +1,16 @@
 from datetime import datetime
-from app import data_manager
+import queue
 from app import strategy
-
+from app import receiver
 
 
 start_datetime = datetime.utcnow()
+le_queue = queue.Queue()
 
-data_list = data_manager.get_data('BTCUSDT', '1h', 2)
+rec = receiver.PETROSAReceiver('binance_socket_raw', le_queue)
+# strategy.gogo(le_queue)
 
-# print(data_manager.get_data('BTCUSDT', '15m', 2)[0])
-# print(data_manager.get_data('BTCUSDT', '15m', 2)[1])
+strat = strategy.Strategy()
 
-print(strategy.calc_diff(data_list))
+while True:
+    strat.run(le_queue)
