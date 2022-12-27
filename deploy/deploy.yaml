@@ -18,8 +18,6 @@ spec:
       - name: petrosa-strategy-gapfinder
         image: yurisa2/petrosa-strategy-gapfinder:latest
         imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
         env:
           - name: VERSION
             value: "0.0.1"
@@ -28,4 +26,10 @@ spec:
               secretKeyRef:
                 name: petrosa-apps-secret
                 key: MONGO_URI
+                optional: false
+          - name: NEW_RELIC_LICENSE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: NEW_RELIC_LICENSE_KEY
                 optional: false
