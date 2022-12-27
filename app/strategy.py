@@ -21,6 +21,11 @@ class Strategy(object):
     def build_request(self, ticker, type, price, stop_loss_p, take_profit_p):
         token = f"{os.environ.get('BINANCE_API_KEY')};{os.environ.get('BINANCE_API_SECRET')}"
 
+        price = float(price)
+        stop_loss_p = float(stop_loss_p)
+        take_profit_p = float(take_profit_p)
+
+
         if type == "COMPRA":
             stop_loss = price + (price * (stop_loss_p/100))
             take_profit = price - (price * (take_profit_p/100))
