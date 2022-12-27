@@ -24,7 +24,7 @@ class PETROSAReceiver(object):
             logging.error('Error in Kafka Consumer')
             os._exit(1)
 
-        logging.warning('Started receiver on topic ', topic)
+        logging.warning('Started receiver on topic: ' +  topic)
         threading.Thread(target=self.run).start()
 
 
