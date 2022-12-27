@@ -29,7 +29,9 @@ class DataManager(object):
 
         previous_date_time = date_time -  datetime.timedelta(minutes=periods[period]['minutes'])
         result = history.find_one(
-            {'ticker': ticker, 'datetime': previous_date_time}, ['datetime', 'close'])
+                                    {'ticker': ticker, 
+                                    'datetime': previous_date_time}, 
+                                    ['datetime', 'close'])
 
         return result
 
