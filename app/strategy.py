@@ -1,7 +1,9 @@
 import os
+import base64
 import logging
 import json
 import requests
+import threading
 import newrelic.agent
 from app import data_manager
 
@@ -10,12 +12,25 @@ class Strategy(object):
     def __init__(self) -> None:
         self.dm = data_manager.DataManager()
 
-
     @newrelic.agent.background_task()
     def calc_diff(self, current, previous):
         diff = ((current / previous) - 1) * 100
         
         return diff
+
+    @newrelic.agent.background_task()
+    def request_it(self, request):
+        
+        request = base64.b64encode(bytes(request))
+        send_data = {"data": request}
+        
+        resp = requests.post(
+                             os.environ.get('BINANCE_ORDERS_ENDPOINT'), 
+                             data=send_data
+                             )
+        
+        logging.warning(resp.text)
+        
 
     @newrelic.agent.background_task()
     def build_request(self, ticker, type, price, stop_loss_p, take_profit_p):
@@ -70,21 +85,29 @@ class Strategy(object):
         params["sell_tp"] = bt["sell_tp"]
 
         if (diff > (-1 * bt["sell_threshold"]) and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
+            
+            req = self.build_request(ticker,
+                                     'COMPRA', price, bt["buy_sl"], bt["buy_tp"])
+            
             logging.warning('This should be a BUY ' + json.dumps(params))
-            logging.warning('BUY Request ' + json.dumps(self.build_request(ticker,
-                            'COMPRA', price, bt["buy_sl"], bt["buy_tp"])))
+            logging.warning('BUY Request ' + json.dumps(req))
+            
+            threading.Thread(target=self.request_it, params=(req)).start()
+            
         elif (diff < bt["buy_threshold"] and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
+            req = self.build_request(ticker,
+                                     'VENDA',
+                                     price,
+                                     bt["sell_sl"],
+                                     bt["sell_tp"])
             logging.warning('This should be a SELLLLLL' + json.dumps(params))
-            logging.warning('SELL Request ' + json.dumps(self.build_request(ticker,
-                                                                            'VENDA', 
-                                                                            price, 
-                                                                            bt["sell_sl"], 
-                                                                            bt["sell_tp"])))
+            logging.warning('SELL Request ' + json.dumps(req))
+            threading.Thread(target=self.request_it, params=(req)).start()
+
 
         else:
             # logging.warning('didnt reach params' + json.dumps(params))
             pass
-
 
     @newrelic.agent.background_task()
     def run(self, msg_queue):
