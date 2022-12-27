@@ -26,6 +26,9 @@ class Strategy(object):
         send_data ={"message": {"data": request}}
         send_data = json.dumps(send_data)
         
+        
+        logging.warning(send_data)
+        
         # resp = requests.post(
         #                      os.environ.get('BINANCE_ORDERS_ENDPOINT'), 
         #                      data=send_data
