@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: petrosa-strategy-gapfinder-deploy
+  name: petrosa-strategy-gapfinder
   namespace: petrosa-apps
   labels:
     app: petrosa-strategy-gapfinder-app
@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: VERSION
-            value: "0.0.7"
+            value: "0.0.8"
           - name: MONGO_URI
             valueFrom:
               secretKeyRef:
@@ -38,4 +38,22 @@ spec:
               secretKeyRef:
                 name: petrosa-apps-secret
                 key: KAFKA_SUBSCRIBER
+                optional: false
+          - name: BINANCE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: BINANCE_API_KEY
+                optional: false
+          - name: BINANCE_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: BINANCE_API_SECRET
+                optional: false
+          - name: BINANCE_ORDERS_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: BINANCE_ORDERS_ENDPOINT
                 optional: false
