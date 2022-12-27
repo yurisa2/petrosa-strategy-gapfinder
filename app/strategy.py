@@ -92,7 +92,7 @@ class Strategy(object):
             logging.warning('This should be a BUY ' + json.dumps(params))
             logging.warning('BUY Request ' + json.dumps(req))
             
-            threading.Thread(target=self.request_it, params=(req)).start()
+            threading.Thread(target=self.request_it, args=(req)).start()
             
         elif (diff < bt["buy_threshold"] and bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             req = self.build_request(ticker,
@@ -102,7 +102,7 @@ class Strategy(object):
                                      bt["sell_tp"])
             logging.warning('This should be a SELLLLLL' + json.dumps(params))
             logging.warning('SELL Request ' + json.dumps(req))
-            threading.Thread(target=self.request_it, params=(req)).start()
+            threading.Thread(target=self.request_it, args=(req)).start()
 
 
         else:
