@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: VERSION
-            value: "0.0.4"
+            value: "0.0.5"
           - name: MONGO_URI
             valueFrom:
               secretKeyRef:
@@ -32,4 +32,10 @@ spec:
               secretKeyRef:
                 name: petrosa-apps-secret
                 key: NEW_RELIC_LICENSE_KEY
+                optional: false
+          - name: KAFKA_SUBSCRIBER
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: KAFKA_SUBSCRIBER
                 optional: false
