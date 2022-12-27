@@ -13,9 +13,7 @@ COPY . ./
 
 # Install production dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
-ENV NEW_RELIC_LOG=/tmp/newrelic.log
-
-
+RUN pip install newrelic
 
 ENV NEW_RELIC_APP_NAME=petrosa-strategy-gapfinder
 ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
