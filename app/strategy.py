@@ -74,7 +74,7 @@ class Strategy(object):
             return False
 
         TRADES = 2
-        SQN = 2
+        SQN = 0.1
 
         params = {}
         params['ticker'] = ticker
@@ -92,7 +92,10 @@ class Strategy(object):
             bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             
             req = self.build_request(ticker,
-                                     'COMPRA', price, bt["buy_sl"], bt["buy_tp"])
+                                     'COMPRA', 
+                                     price, 
+                                     bt["buy_sl"], 
+                                     bt["buy_tp"])
             
             logging.warning('BUY Request ' + json.dumps(req))
             
