@@ -17,7 +17,7 @@ class Strategy(object):
         return diff
 
     @newrelic.agent.background_task()
-    def request_it(self, request):
+    def request_it(self, request) -> None:
         
         request = base64.b64encode(bytes(json.dumps(request), "utf-8"))
         request = request.decode()
@@ -119,15 +119,18 @@ class Strategy(object):
             pass
 
     @newrelic.agent.background_task()
-    def run(self, msg_queue):
+    def run(self, msg_queue) -> None:
         msg = msg_queue.get()
         decoded = self.dm.decode_msg(msg)
 
-        previous_kline = self.dm.get_previous_kline(
-            decoded['symbol'], decoded['period'], decoded['kline_date'])
+        try:
+            previous_kline = self.dm.get_previous_kline(
+                decoded['symbol'], decoded['period'], decoded['kline_date'])
 
-        diff = self.calc_diff(float(decoded['close']), 
-                                    float(previous_kline['close']))
+            diff = self.calc_diff(float(decoded['close']), 
+                                        float(previous_kline['close']))
 
-        self.actuator(decoded['symbol'], decoded['period'], diff, decoded)
+            self.actuator(decoded['symbol'], decoded['period'], diff, decoded)
+        except Exception as e:
+            logging.error(e)
 

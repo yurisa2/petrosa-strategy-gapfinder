@@ -11,7 +11,7 @@ class PETROSAReceiver(object):
     def __init__(self,
                  topic,
                  petrosa_queue
-                 ):
+                 ) -> None:
 
         self.petrosa_queue = petrosa_queue
         try:
