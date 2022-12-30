@@ -132,5 +132,6 @@ class Strategy(object):
 
             self.actuator(decoded['symbol'], decoded['period'], diff, decoded)
         except Exception as e:
+            logging.warning(decoded)
             logging.error(e)
 
