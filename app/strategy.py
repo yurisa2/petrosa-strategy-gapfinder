@@ -58,7 +58,7 @@ class Strategy(object):
             "type": type,
             "stop_loss": stop_loss,
             "take_profit": take_profit,
-            "valid_until": "2022-12-31T19:00:00"
+            # "valid_until": "2022-12-31T19:00:00"
         }
         return data
 
