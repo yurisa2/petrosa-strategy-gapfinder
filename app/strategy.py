@@ -49,7 +49,7 @@ class Strategy(object):
             take_profit = price * (1 + (take_profit_p / 100))
         if type == "VENDA":
             stop_loss = price * (1 + (stop_loss_p / 100))
-            take_profit = price * (1 + (take_profit_p / 100))
+            take_profit = price * (1 - (take_profit_p / 100))
 
 
         data = {
