@@ -73,7 +73,7 @@ class Strategy(object):
             logging.info("No backtests for this: " + str(ticker) + ' ' + str(period) + ' ' + str(diff))
             return False
 
-        TRADES = 2
+        TRADES = 5
         SQN = 0.1
 
         params = {}
