@@ -50,7 +50,7 @@ class Strategy(object):
         if type == "BUY":
             stop_loss = price * (1 - (stop_loss_p / 100))
             take_profit = price * (1 + (take_profit_p / 100))
-        if type == "SELL":
+        elif type == "SELL":
             stop_loss = price * (1 + (stop_loss_p / 100))
             take_profit = price * (1 - (take_profit_p / 100))
         else:
@@ -79,7 +79,7 @@ class Strategy(object):
             logging.info("No backtests for this: " + str(ticker) + ' ' + str(period) + ' ' + str(diff))
             return False
 
-        TRADES = 5
+        TRADES = 10
         SQN = 1
 
         params = {}
@@ -98,7 +98,7 @@ class Strategy(object):
             bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             
             req = self.build_request(ticker,
-                                     "BUY", 
+                                     'BUY', 
                                      price, 
                                      bt["buy_sl"], 
                                      bt["buy_tp"])
