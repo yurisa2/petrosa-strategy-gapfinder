@@ -54,8 +54,8 @@ class Strategy(object):
             stop_loss = price * (1 + (stop_loss_p / 100))
             take_profit = price * (1 - (take_profit_p / 100))
         else:
-            stop_loss = price
-            take_profit = price
+            logging.error("wrong stops bruh")
+            return False
 
 
         data = {
@@ -98,28 +98,30 @@ class Strategy(object):
             bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             
             req = self.build_request(ticker,
-                                     'BUY', 
+                                     "BUY", 
                                      price, 
                                      bt["buy_sl"], 
                                      bt["buy_tp"])
-            logging.warning('BT | ' + json_util.dumps(bt))
-            logging.warning('BUY Request | ' + json.dumps(req))
-            
-            self.request_it(req)
+            if req is not False:
+                logging.warning('BT | ' + json_util.dumps(bt))
+                logging.warning('BUY Request | ' + json.dumps(req))
+                
+                self.request_it(req)
             
         elif (diff > 0 and 
               diff > bt["sell_threshold"] and 
               bt['# Trades'] > TRADES and 
               bt['SQN'] > SQN):
             req = self.build_request(ticker,
-                                     'SELL',
+                                     "SELL",
                                      price,
                                      bt["sell_sl"],
                                      bt["sell_tp"])
 
-            logging.warning('BT | ' + json_util.dumps(bt))
-            logging.warning('SELL Request | ' + json.dumps(req))
-            self.request_it(req)
+            if req is not False:
+                logging.warning('BT | ' + json_util.dumps(bt))
+                logging.warning('SELL Request | ' + json.dumps(req))
+                self.request_it(req)
 
         else:
             # logging.warning('didnt reach params' + json.dumps(params))
