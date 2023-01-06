@@ -1,12 +1,12 @@
-import os
-from datetime import datetime
-import queue
 import logging
-from app import strategy
-from app import receiver
+import os
+import queue
+from datetime import datetime
+
+from app import receiver, strategy
 
 logging.warning("starting petrosa-strategy-gapfinder | ver.:  " + 
-                                                    os.environ.get('VERSION'))
+                                                    os.environ.get('VERSION', "0.0.0"))
 
 
 start_datetime = datetime.utcnow()

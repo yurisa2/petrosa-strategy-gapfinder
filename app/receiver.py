@@ -1,9 +1,10 @@
-import os
 import json
-import threading
 import logging
-from kafka import KafkaConsumer
+import os
+import threading
+
 import newrelic.agent
+from kafka import KafkaConsumer
 
 
 class PETROSAReceiver(object):

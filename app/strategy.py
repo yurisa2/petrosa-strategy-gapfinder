@@ -1,9 +1,11 @@
-import os
 import base64
-import logging
 import json
-import requests
+import logging
+import os
+
 import newrelic.agent
+import requests
+
 from app import data_manager
 
 
@@ -28,7 +30,7 @@ class Strategy(object):
         logging.warning(send_data)
         
         resp = requests.post(
-                             os.environ.get('BINANCE_ORDERS_ENDPOINT'), 
+                             os.environ.get('BINANCE_ORDERS_ENDPOINT', ""), 
                              data=send_data
                              )
         
@@ -44,12 +46,15 @@ class Strategy(object):
         take_profit_p = float(take_profit_p)
 
 
-        if type == "COMPRA":
+        if type == "BUY":
             stop_loss = price * (1 - (stop_loss_p / 100))
             take_profit = price * (1 + (take_profit_p / 100))
-        if type == "VENDA":
+        if type == "SELL":
             stop_loss = price * (1 + (stop_loss_p / 100))
             take_profit = price * (1 - (take_profit_p / 100))
+        else:
+            stop_loss = price
+            take_profit = price
 
 
         data = {
@@ -92,12 +97,12 @@ class Strategy(object):
             bt['# Trades'] > TRADES and bt['SQN'] > SQN):
             
             req = self.build_request(ticker,
-                                     'COMPRA', 
+                                     'BUY', 
                                      price, 
                                      bt["buy_sl"], 
                                      bt["buy_tp"])
-            
-            logging.warning('BUY Request ' + json.dumps(req))
+            logging.warning('BT | ' + json.dumps(bt))
+            logging.warning('BUY Request | ' + json.dumps(req))
             
             self.request_it(req)
             
@@ -106,12 +111,13 @@ class Strategy(object):
               bt['# Trades'] > TRADES and 
               bt['SQN'] > SQN):
             req = self.build_request(ticker,
-                                     'VENDA',
+                                     'SELL',
                                      price,
                                      bt["sell_sl"],
                                      bt["sell_tp"])
 
-            logging.warning('SELL Request ' + json.dumps(req))
+            logging.warning('BT | ' + json.dumps(bt))
+            logging.warning('SELL Request | ' + json.dumps(req))
             self.request_it(req)
 
         else:
@@ -126,6 +132,10 @@ class Strategy(object):
         try:
             previous_kline = self.dm.get_previous_kline(
                 decoded['symbol'], decoded['period'], decoded['kline_date'])
+
+            if not previous_kline:
+                logging.warn('Could not find previous candle')
+                return None
 
             diff = self.calc_diff(float(decoded['close']), 
                                         float(previous_kline['close']))

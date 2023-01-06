@@ -1,12 +1,14 @@
-import pymongo
-import os
 import datetime
-from main import periods
+import os
+
 import newrelic.agent
+import pymongo
+
+from main import periods
 
 
 class DataManager(object):
-    def __init__(self):
+    def __init__(self) -> None:
         self.client = self.get_mongo_client()
 
 
