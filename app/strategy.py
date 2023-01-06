@@ -2,6 +2,7 @@ import base64
 import json
 import logging
 import os
+import bson.json_util as json_util
 
 import newrelic.agent
 import requests
@@ -101,7 +102,7 @@ class Strategy(object):
                                      price, 
                                      bt["buy_sl"], 
                                      bt["buy_tp"])
-            logging.warning('BT | ' + json.dumps(bt))
+            logging.warning('BT | ' + json_util.dumps(bt))
             logging.warning('BUY Request | ' + json.dumps(req))
             
             self.request_it(req)
@@ -116,7 +117,7 @@ class Strategy(object):
                                      bt["sell_sl"],
                                      bt["sell_tp"])
 
-            logging.warning('BT | ' + json.dumps(bt))
+            logging.warning('BT | ' + json_util.dumps(bt))
             logging.warning('SELL Request | ' + json.dumps(req))
             self.request_it(req)
 
