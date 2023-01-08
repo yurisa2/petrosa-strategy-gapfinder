@@ -80,7 +80,7 @@ class Strategy(object):
             return False
 
         TRADES = 10
-        SQN = 1
+        SQN = 2
 
         params = {}
         params['ticker'] = ticker
